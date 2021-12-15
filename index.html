@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.4/dist/css/foundation.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/style/style.css"/>
     <title>Weather Dashboard</title>
 </head>
@@ -11,21 +12,24 @@
     <header Class="nav">
         <h1>Weather Dashboard</h1>
     </header>
-    <main>
-        <div>
+    <main class="grid-x grid-margin-x">
+        <div class="cell medium-6 large-4">
             <div class="card">
                 <h2 class="card-header">search for a city:</h2>
-                <form class="card-body">
+                <form id="city-form" class="card-body">
                     <lable class="form-lable" for="cityname">City Name</lable>
-                    <input name="cityname" id="cityname" type="text" autofocus="true" placeholder="Houston" class="form-input"/>
-                    <button type="submit" class="btn" >Search</button>
+                    <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input"/>
+                    <button type="submit" class="btn" id="searchBTn" >Search</button>
                 </form>
             </div>
         </div>
+        <div class ="cell medium-6 large-4 ">
+            <div class="card2 " id="result">
+                <!--print the search result-->
+            </div>
+        </div>
     </main>
-    <div id="result">
-        <!--print the search result-->
-    </div>
+  
 
     <script src="assets/js/script.js"></script>
 </body>
