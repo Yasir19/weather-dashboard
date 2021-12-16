@@ -15,10 +15,11 @@ var tempEl= document.createElement("p");
 var humidityEl= document.createElement("p");
 var windEl= document.createElement("p");
 // appending the dynamically create elment 
-resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl);
+var descEl= document.createElement("p");
+resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl);
 
 //APi key 
-    var apiKey ="5d1bf1cd99bc77abc1a5d1777f514808"
+    var apiKey ="5d1bf1cd99bc77abc1a5d1777f514808";
     // function to get the city name w
 var getCity =function(event){
     // prevent the browser from performing thr default action 
@@ -71,7 +72,7 @@ fetch(apiUrl).then(function(response){
 var displayWeather = function(data){
     //define valrable for the weather data 
     var {name} = data;
-    var {icon}=data.weather[0];
+    var {icon,description}=data.weather[0];
     var {temp,humidity}=data.main;
 
     //write the infromation in each element 
@@ -79,8 +80,18 @@ var displayWeather = function(data){
     iconEl.src="http://openweathermap.org/img/wn/" + icon + "@2x.png"
     tempEl.innerText="Temp: "+ temp + "°F";
     humidityEl.innerText="Humidity "+ humidity; 
+    descEl.innerText=description; 
 };
+
+var rondomCity =function(i){
+    var cities= ["london","tokyo","paris","amsterdam","toronto", "moscow","dubai"];
+    for (var i = 0; i< cities.length; i++){
+        (function(i){
+            getWaetherInfo(cities[i]);
+        },3000*(i+1));
+    }
+}
+rondomCity();
 // display a defult city before the search 
-getWaetherInfo("london");
 // event listerner to start search 
 searchBtn.addEventListener("click", getCity);
