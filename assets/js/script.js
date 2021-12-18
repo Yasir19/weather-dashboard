@@ -45,23 +45,23 @@ var displayWeather = function(forecast){
     
 };
 
-var rondomCity =function(i){
-    var cities= ["london","tokyo","paris","amsterdam","toronto", "moscow","dubai"];
-    var i = 0;
-    while(i < cities.length){
-        (function(i){
-            setTimeout(function(){
-                getWaetherInfo(cities[i]);
-                document.body.style.backgroundImage =
-                "url('https://source.unsplash.com/1600x900/?" + cities[i] + "')";
-            },5000*(i+1));
+// var rondomCity =function(i){
+//     var cities= ["London","tokyo","paris","amsterdam","toronto", "moscow","dubai"];
+//     var i = 0;
+//     while(i < cities.length){
+//         (function(i){
+//             setTimeout(function(){
+//                 getCoords(cities[i]);
+//                 document.body.style.backgroundImage =
+//                 "url('https://source.unsplash.com/1600x900/?" + cities[i] + "')";
+//             },5000*(i+1));
            
-        })(i);
-        i++;
-    }
+//         })(i);
+//         i++;
+//     }
 
-}
-var getCity = function(city,data){
+// }
+var getcity = function(city,data){
     displayWeather(city ,data.current);
         var date =dayjs.format("M/D/YYYY");
     }
@@ -69,8 +69,8 @@ var getCity = function(city,data){
 // get weather info function 
 var getWaetherInfo =function (location){
     var lat = location;
-    var lon =location;
-    var city =location.name;
+    var lon = location;
+    var city = location.name
     // api Url for the weather infromation 
     var apiUrl = `${weatherApiRootUrl}/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,daily&appid=${apiKey}`;
 //make a request to the url 
@@ -79,7 +79,7 @@ fetch(apiUrl).then(function(response){
     if (response.ok){
         //get the data 
         response.json().then(function(data){
-          getCity(city, data);
+          getcity(city, data);
         })
         // if the city name was wrong 
     }else{
@@ -92,37 +92,39 @@ fetch(apiUrl).then(function(response){
     alert("Unable to connect to the server")
 });
 }
-function getCoords(search){
-    var apiUrl = `${weatherApiRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${apiKey}`;
+
+function getCoords(data,city){
+
+    var apiUrl = "https://api.openweathermap.org/geo/1.0/direct?q="+city+"&limit=5&appid="+apiKey;
     //make a request to the url
-    fetch(apiUrl).then(function(response){ 
+    fetch(apiUrl)
+    .then(function(response){ 
           // if the response is okay 
-            return response.json()
+            if (response.ok){
+                response.json().then(function(data){
+                    console.log(data);
+                });
+            }else{
+                alert("error City not found");
+            }
           })
-          .then(function(data){
-              if (!data[0]) {
-                   // alert the user 
-                   alert("error City not found");
-              }else{
-                  historySearch(search);
-                  getWaetherInfo(data[0]);
-              }
-            })
+          
             // if there is any network error
             .catch(function(error){
                 //alert the user 
                 alert("Unable to connect to the server");
             });
 }
-var getCity =function(event){
+var getCity =function(event,city){
     // prevent the browser from performing thr default action 
     event.preventDefault();
     //get the city name from the ccity input snd trim it if there is any spacing 
     var cityName = cityInputEl.value.trim();
+    console.log(cityName);
     //check if the user enter a city name 
     if(cityName){
         //run the get weather function 
-        getCoords(search);
+        getCoords(city);
         //clear the input filed 
         cityInputEl.value="";
         // if there is no input for the user 
@@ -134,7 +136,7 @@ var getCity =function(event){
   
 }
 
-rondomCity();
+// rondomCity();
 // display a defult city before the search 
 // event listerner to start search 
 searchBtn.addEventListener("click", getCity);
