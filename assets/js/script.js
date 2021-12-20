@@ -44,7 +44,7 @@ resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl, uviEl);
     }
     // Function to update history in local storage then updates displayed history.
     let setHistory = function(city){
-       if (history.indexof(city) !== -1 ){
+       if (history.indexOf(city) !== -1 ){
            return;
        };
        history.push(city);
