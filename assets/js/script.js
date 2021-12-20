@@ -137,7 +137,7 @@ var randomCity =function(i){
             let time = setTimeout(function(){
                 document.body.style.backgroundImage =
                 "url('https://source.unsplash.com/1600x900/?" + cities[i] + "')";
-            },28000*(i));
+            },15000*(i));
                 // function to stop the timer 
                 var stopTime = function (){
                 // stop the timer
