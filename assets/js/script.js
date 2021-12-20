@@ -19,6 +19,7 @@ var humidityEl= document.createElement("p");
 var windEl= document.createElement("p");
 var uviEl= document.createElement("p");
 var descEl= document.createElement("p");
+var uviColor = document.createElement("button");
 
 // appending the dynamically create elment 
 resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl, uviEl);
@@ -79,6 +80,20 @@ var getWeather = function(city,weather){
     tempEl.innerText="Temp: "+ temp + "°F";
     descEl.innerText= description; 
     humidityEl.innerText="Humidity "+ humidity; 
+    uviEl.innerText=" UV Index: ";
+    uviColor.classList.add("btn", "btn-sm");
+    if (uvi <3){
+        uviColor.classList.add('btn-success'); 
+    }else if (uvi <7){
+        uviColor.classList.add('btn-warning');
+    }else{
+        uviColor.classList.add('btn-danger');
+    }
+    uviColor.textContent = uvi
+    uviEl.append(uviColor);
+    
+
+
 
 };
 let dailyForecast = function (weather,city){
