@@ -1,11 +1,11 @@
-var history =[];
+var cityHistory =[];
 // Dom Elmenet refrence
 var resultEl = document.getElementById("result");
 var cityFormEl=document.getElementById("city-form");
 var cityInputEl=document.getElementById("cityname");
 var searchBtn =document.getElementById("searchBTn");
 var dailyContiner = document.getElementById("daily");
-var historyContiner = document.getElementById("history");
+var historyContiner = document.getElementById("city-history");
 
 
   // creating Element dynamically for weather infromation 
@@ -30,32 +30,36 @@ resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl, uviEl);
     // function to get the city name w
 
     let historySection = function(){
-        historyContiner. innerHTML =" ";
+        // historyContiner.innerHTML ="";
         //start at the end of the history array and count donwn to show the most recet searche city at the top 
-        for (let i=history.length -1;i>=0;i-- ){
+        for (let i=cityHistory.length -1;i>=0;i-- ){
             let historyBtn = document.createElement('button');
+            historyBtn.setAttribute("class","historyBtn")
             historyBtn.setAttribute("type", "button");
             historyBtn.setAttribute("aria-control","today forecast");
             // `data-search` allows access to city name when click handler is invoked
-            searchBtn.setAttribute("data-search",history[i]);
-            historyBtn.textContent=history[i];
+            searchBtn.setAttribute("data-search",cityHistory[i]);
+            historyBtn.textContent=cityHistory[i];
+            console.log(cityHistory);
             historyContiner.append(historyBtn);
         }
     }
-    // Function to update history in local storage then updates displayed history.
-    let setHistory = function(city){
-       if (history.indexOf(city) !== -1 ){
-           return;
-       };
-       history.push(city);
-       localStorage.setItem("city-history",JSON.stringify(history));
-       historySection();
-    }
+       // Function to update history in local storage then updates displayed history.
+       function appendToHistory(city) {
+       // If there is no search term return the function
+       if (cityHistory.indexOf(city) !== -1) {
+       return;
+     }
+     cityHistory.push(city);
+  
+    localStorage.setItem('search-history',JSON.stringify(cityHistory));
+    historySection();
+  }
     // Function to get search history from local storage
     let intialSearch = function(){
-        let storedHistory = localStorage.getItem("city-history");
+        let storedHistory = localStorage.getItem("search-history");
         if (storedHistory){
-            history=JSON.parse(storedHistory);
+            cityHistory=JSON.parse(storedHistory);
         }
         historySection();
     }
@@ -70,54 +74,55 @@ var getWeather = function(city,weather){
     let description =weather.weather[0].description
     console.log(temp,humidity,uvi,icon,description);
 
-    nameEl.innerText=city + dayjs.unix(unixTs).format("M/D/YYYY");
+    nameEl.innerText=city+' '+ dayjs.unix(unixTs).format("M/D/YYYY");
     iconEl.src="http://openweathermap.org/img/wn/" + icon + "@2x.png"
     tempEl.innerText="Temp: "+ temp + "°F";
     descEl.innerText= description; 
     humidityEl.innerText="Humidity "+ humidity; 
-    setHistory(city)
+
 };
 let dailyForecast = function (weather,city){
      //define valrable for the
      var unixTs =weather.dt;
      let temp = weather.temp.day;
      let humidity =weather.humidity;
-     let uvi = weather.uvi;
      let icon = weather.weather[0].icon;
      let description =weather.weather[0].description
-     console.log(temp,humidity,uvi,icon,description);
+     console.log(temp,humidity,icon,description);
           // creating Element dynamically for weather infromation 
     var timeEl =document.createElement("h3");
     timeEl.setAttribute("class","city-name");
     var iconsEl =document.createElement("img");
     iconsEl.setAttribute("src","");
-
     var tempsEl= document.createElement("p");
     var humidEl= document.createElement("p");
     var windsEl= document.createElement("p");
     var descripEl= document.createElement("p");
     //write the infromation in each element 
-
     timeEl.innerText=dayjs.unix(unixTs).format("M/D/YYYY");
-    iconsEl.src="http://openweathermap.org/img/wn/" + icon + "@2x.png"
     tempsEl.innerText="Temp: "+ temp + "°F";
+    iconsEl.src="http://openweathermap.org/img/wn/" + icon + "@2x.png"
     descripEl.innerText= description; 
     humidEl.innerText="Humidity "+ humidity;
-
-    dailyContiner.append(timeEl,iconsEl,tempsEl,humidEl,descripEl);
+    let container=document.createElement("div")
+    container.setAttribute("class","card col-2")
+     let title =document.createElement("div");
+     title.setAttribute("class","card-title");
+     let card=document.createElement("div");
+     card.setAttribute("class","body");
+    dailyContiner.appendChild(container);
+    container.appendChild(title);
+    container.append(card);
+    title.append(timeEl);
+    card.append(iconsEl,tempsEl,humidEl,descripEl);
 }
 let daylyWeather = function(weather){
     var firstDay = dayjs().add(1, "day").startOf("day").unix();
     var lastday = dayjs().add(6,"day").startOf("day").unix();
-    var titleSec = document.createElement("div");
-    var title = document.createElement("h4");
-    title.textContent ="5-Day forecast :";
-    titleSec.append(title);
-
-    dailyContiner.innerHTML="";
-    dailyContiner.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl);
-    dailyContiner.append(titleSec);
-
+    var forecast=document.createElement("h2");
+    var title=document.getElementById("forecast");
+    forecast.innerText="5 Day forecast";
+    title.append(forecast);
     for (let i= 0; i<weather.length; i++){
         if (weather[i].dt>= firstDay && weather[i].dt<lastday){
             dailyForecast(weather[i]);
@@ -125,25 +130,24 @@ let daylyWeather = function(weather){
     }
 } 
 
-// var randomCity =function(i){
-//     var cities= ["London","tokyo","paris","amsterdam","toronto", "moscow","dubai"];
-//     for(var i = 0;i < cities.length;i++){
-//         (function(i){
-//             let time = setTimeout(function(){
-//                 getCoords(cities[i]);
-//                 document.body.style.backgroundImage =
-//                 "url('https://source.unsplash.com/1600x900/?" + cities[i] + "')";
-//             },5000*(i));
-//                 // function to stop the timer 
-//                 var stopTime = function (){
-//                 // stop the timer
-//                 clearTimeout(time);
-//                 }
-//                 searchBtn.addEventListener("click", stopTime);
-//         })(i);
-//     }
+var randomCity =function(i){
+    var cities= ["London","tokyo","paris","amsterdam","toronto", "moscow","dubai"];
+    for(var i = 0;i < cities.length;i++){
+        (function(i){
+            let time = setTimeout(function(){
+                document.body.style.backgroundImage =
+                "url('https://source.unsplash.com/1600x900/?" + cities[i] + "')";
+            },28000*(i));
+                // function to stop the timer 
+                var stopTime = function (){
+                // stop the timer
+                clearTimeout(time);
+                }
+                searchBtn.addEventListener("click", stopTime);
+        })(i);
+    }
 
-// }
+}
 function renderItems(city, data) {
     getWeather(city, data.current);
     daylyWeather(data.daily);
@@ -188,6 +192,7 @@ function getCoords(city){
         if (!data[0]){
             alert('location not found');
         }else {
+            appendToHistory(city);
             getWaetherInfo(data[0]);
             console.log(data);
         }
@@ -216,8 +221,24 @@ var getCity =function(event){
      // change the backgroun color based on the city name
   
 }
+let historySelection = function(e){
+    if(!e.target.matches(".historyBtn")){
+        return;
+    }
+    var btn = e.target;
+    var city = btn.getAttribute('data-search');
+    getCoords(city);
 
-// randomCity();
+} 
+
+randomCity();
 // display a defult city before the search 
 // event listerner to start search 
+intialSearch ();
 searchBtn.addEventListener("click", getCity);
+historyContiner.addEventListener("click", historySelection);
+
+
+
+
+
