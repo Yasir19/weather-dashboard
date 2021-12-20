@@ -31,7 +31,7 @@ resultEl.append(nameEl,iconEl,tempEl,humidityEl,windEl, descEl, uviEl);
     // function to get the city name w
 
     let historySection = function(){
-        // historyContiner.innerHTML ="";
+        historyContiner.innerHTML ="";
         //start at the end of the history array and count donwn to show the most recet searche city at the top 
         for (let i=cityHistory.length -1;i>=0;i-- ){
             let historyBtn = document.createElement('button');
@@ -91,7 +91,7 @@ var getWeather = function(city,weather){
     }
     uviColor.textContent = uvi
     uviEl.append(uviColor);
-    
+
 
 
 
@@ -134,10 +134,10 @@ let dailyForecast = function (weather,city){
 let daylyWeather = function(weather){
     var firstDay = dayjs().add(1, "day").startOf("day").unix();
     var lastday = dayjs().add(6,"day").startOf("day").unix();
-    var forecast=document.createElement("h2");
-    var title=document.getElementById("forecast");
-    forecast.innerText="5 Day forecast";
-    title.append(forecast);
+    // var forecast=document.createElement("h2");
+    // var title=document.getElementById("forecast");
+    // forecast.innerText="5 Day forecast";
+    // title.append(forecast);
     for (let i= 0; i<weather.length; i++){
         if (weather[i].dt>= firstDay && weather[i].dt<lastday){
             dailyForecast(weather[i]);
